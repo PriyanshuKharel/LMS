@@ -76,6 +76,7 @@ const ProfileInfo = ({ avatar, user }: Props) => {
             />
           </div>
         </form>
+        <br />
       </div>
     </>
   );
