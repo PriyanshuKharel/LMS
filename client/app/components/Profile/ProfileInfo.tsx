@@ -1,8 +1,13 @@
 import Image from "next/image";
-import React, { use, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import avatarIcon from "../../../public/assets/avatar.png";
 import { AiOutlineCamera } from "react-icons/ai";
 import { styles } from "@/app/styles/style";
+import {
+  useEditProfileMutation,
+  useUpdateAvatarMutation,
+} from "@/redux/features/user/userApi";
+import { useLoadUserQuery } from "@/redux/features/api/appSlice";
 
 type Props = {
   avatar: string | null;
@@ -11,13 +16,42 @@ type Props = {
 
 const ProfileInfo = ({ avatar, user }: Props) => {
   const [name, setName] = useState(user && user.name);
+  const [updateAvatar, { isSuccess, error }] = useUpdateAvatarMutation();
+  const [editProfile, { isSuccess: success, error: mainError }] =
+    useEditProfileMutation();
+  const [loadUser, setLoadUser] = useState(false);
+  const {} = useLoadUserQuery(undefined, { skip: loadUser ? false : true });
 
   const imageHandler = async (e: any) => {
-    console.log("gggg");
+    // const file = e.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      if (fileReader.readyState === 2) {
+        const avatar = fileReader.result;
+        updateAvatar({
+          avatar,
+        });
+      }
+    };
+    fileReader.readAsDataURL(e.target.files[0]);
   };
 
+  useEffect(() => {
+    if (isSuccess || success) {
+      setLoadUser(true);
+    }
+    if (error || mainError) {
+      console.log(error);
+    }
+  }, [isSuccess, success, error, mainError]);
+
   const handleSubmit = async (e: any) => {
-    console.log("submit");
+    e.preventDefault();
+    if (name !== "") {
+      await editProfile({
+        name: name,
+      });
+    }
   };
   return (
     <>
@@ -26,6 +60,8 @@ const ProfileInfo = ({ avatar, user }: Props) => {
           <Image
             src={user.avatar || avatar ? user.avatar.url || avatar : avatarIcon}
             alt=""
+            width={120}
+            height={120}
             className="w-[120px] h-[120px] cursor-pointer border-[3px] border-[#37a39a] rounded-full"
           />
           <input
