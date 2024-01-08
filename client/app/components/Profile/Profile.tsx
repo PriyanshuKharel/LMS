@@ -2,6 +2,7 @@
 import React, { FC, useState } from "react";
 import SideBarProfile from "./SideBarProfile";
 import ProfileInfo from "./ProfileInfo";
+import ChangePassword from "./ChangePassword";
 import { useLogOutQuery } from "@/redux/features/auth/authApi";
 import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
@@ -53,6 +54,12 @@ const Profile: FC<Props> = ({ user }) => {
       {active === 1 && (
         <div className="w-full h-full bg-transparent mt-[80px]">
           <ProfileInfo avatar={avatar} user={user} />
+        </div>
+      )}
+
+      {active === 2 && (
+        <div className="w-full h-full bg-transparent mt-[80px]">
+          <ChangePassword />
         </div>
       )}
     </div>

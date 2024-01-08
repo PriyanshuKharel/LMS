@@ -8,6 +8,7 @@ import {
   useUpdateAvatarMutation,
 } from "@/redux/features/user/userApi";
 import { useLoadUserQuery } from "@/redux/features/api/appSlice";
+import toast from "react-hot-toast";
 
 type Props = {
   avatar: string | null;
@@ -42,6 +43,9 @@ const ProfileInfo = ({ avatar, user }: Props) => {
     }
     if (error || mainError) {
       console.log(error);
+    }
+    if (success) {
+      toast.success("Profile updated successfully!");
     }
   }, [isSuccess, success, error, mainError]);
 
